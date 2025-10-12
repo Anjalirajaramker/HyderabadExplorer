@@ -163,6 +163,23 @@ main {
     font-weight: 500;
 }
 
+/* Get Distance Button */
+.get-distance-btn {
+    background-color: #667eea;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.get-distance-btn:hover {
+    background-color: #5469d4;
+}
+
 /* Description */
 .description {
     margin-bottom: 1rem;
@@ -234,46 +251,17 @@ main {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    
-    main {
-        padding: 0 0.5rem;
-    }
-    
-    #filter-options {
-        grid-template-columns: 1fr;
-    }
-    
-    #destinations-container {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .destination-card {
-        padding: 1rem;
-    }
-    
-    .destination-name {
-        font-size: 1.2rem;
-    }
+    header h1 { font-size: 2rem; }
+    main { padding: 0 0.5rem; }
+    #filter-options { grid-template-columns: 1fr; }
+    #destinations-container { grid-template-columns: 1fr; gap: 1rem; }
+    .destination-card { padding: 1rem; }
+    .destination-name { font-size: 1.2rem; }
 }
 
 @media (max-width: 480px) {
-    header h1 {
-        font-size: 1.5rem;
-    }
-    
-    header {
-        padding: 1.5rem 0;
-    }
-    
-    #filter-container {
-        padding: 1rem;
-    }
-    
-    .filter-label {
-        padding: 0.4rem;
-    }
+    header h1 { font-size: 1.5rem; }
+    header { padding: 1.5rem 0; }
+    #filter-container { padding: 1rem; }
+    .filter-label { padding: 0.4rem; }
 }
