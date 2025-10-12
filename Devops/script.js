@@ -80,9 +80,37 @@ function displayDestinations(destinations, userLat = null, userLon = null) {
 // Extract unique types and create filter checkboxes
 function createFilterOptions(destinations) {
     const uniqueTypes = new Set();
+    
+    // Define type groupings to reduce clutter
+    const typeGroupings = {
+        'Parks': ['Amusement Park', 'Amusement & Water Park', 'Amusement & Theme Park', 'Winter Park', 'Zoological Park', 'Botanical Garden', 'Park', 'Lake Front & Park'],
+        'Heritage': ['Heritage', 'Monument', 'Fort', 'Palace', 'Tomb'],
+        'Museums': ['Museum', 'Art', 'Antiques'],
+        'Religious': ['Hindu Temple'],
+        'Entertainment': ['Film Studio', 'Planetarium', 'Space Shows'],
+        'Nature': ['Lake Front', 'Scenic Drive'],
+        'Shopping': ['Shopping'],
+        'Hotels': ['Hotel']
+    };
+    
     destinations.forEach(dest => {
         if(dest.place_type) {
-            dest.place_type.split(',').map(t => t.trim()).forEach(t => uniqueTypes.add(t));
+            const types = dest.place_type.split(',').map(t => t.trim());
+            types.forEach(type => {
+                // Check if this type should be grouped
+                let grouped = false;
+                for (const [groupName, groupTypes] of Object.entries(typeGroupings)) {
+                    if (groupTypes.includes(type)) {
+                        uniqueTypes.add(groupName);
+                        grouped = true;
+                        break;
+                    }
+                }
+                // If not grouped, add the original type
+                if (!grouped) {
+                    uniqueTypes.add(type);
+                }
+            });
         }
     });
 
@@ -105,17 +133,109 @@ function createFilterOptions(destinations) {
     });
 }
 
+// Create budget filter options
+function createBudgetFilterOptions(destinations) {
+    const budgetRanges = [
+        { label: 'Free', min: 0, max: 0 },
+        { label: 'Under ₹50', min: 1, max: 50 },
+        { label: '₹50 - ₹200', min: 50, max: 200 },
+        { label: '₹200 - ₹500', min: 200, max: 500 },
+        { label: '₹500 - ₹1000', min: 500, max: 1000 },
+        { label: 'Above ₹1000', min: 1000, max: Infinity }
+    ];
+
+    const filterContainer = document.getElementById('budget-filter-options');
+    filterContainer.innerHTML = '';
+
+    budgetRanges.forEach(range => {
+        const label = document.createElement('label');
+        label.className = 'filter-label';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'budget-filter-checkbox';
+        checkbox.dataset.min = range.min;
+        checkbox.dataset.max = range.max;
+        const span = document.createElement('span');
+        span.textContent = range.label;
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        filterContainer.appendChild(label);
+    });
+}
+
+// Extract numeric value from entry fee string
+function extractEntryFee(entryFeeString) {
+    if (!entryFeeString) return null;
+    
+    // Handle "Free" entries
+    if (entryFeeString.toLowerCase().includes('free')) return 0;
+    
+    // Extract first numeric value (usually for Indians/Adults)
+    const match = entryFeeString.match(/₹(\d+)/);
+    return match ? parseInt(match[1]) : null;
+}
+
 // Filter destinations
 function filterDestinations() {
     const selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(cb => cb.dataset.type);
+    const selectedBudgetRanges = Array.from(document.querySelectorAll('.budget-filter-checkbox:checked')).map(cb => ({
+        min: parseInt(cb.dataset.min),
+        max: parseInt(cb.dataset.max)
+    }));
 
     let filtered;
-    if(selectedTypes.length === 0) filtered = window.allDestinations;
-    else filtered = window.allDestinations.filter(dest => {
-        if(!dest.place_type) return false;
-        const types = dest.place_type.split(',').map(t => t.trim());
-        return selectedTypes.some(t => types.includes(t));
-    });
+    if(selectedTypes.length === 0 && selectedBudgetRanges.length === 0) {
+        filtered = window.allDestinations;
+    } else {
+        // Define type groupings (same as in createFilterOptions)
+        const typeGroupings = {
+            'Parks': ['Amusement Park', 'Amusement & Water Park', 'Amusement & Theme Park', 'Winter Park', 'Zoological Park', 'Botanical Garden', 'Park', 'Lake Front & Park'],
+            'Heritage': ['Heritage', 'Monument', 'Fort', 'Palace', 'Tomb'],
+            'Museums': ['Museum', 'Art', 'Antiques'],
+            'Religious': ['Hindu Temple'],
+            'Entertainment': ['Film Studio', 'Planetarium', 'Space Shows'],
+            'Nature': ['Lake Front', 'Scenic Drive'],
+            'Shopping': ['Shopping'],
+            'Hotels': ['Hotel']
+        };
+        
+        filtered = window.allDestinations.filter(dest => {
+            // Type filter
+            let typeMatch = selectedTypes.length === 0; // If no types selected, pass type filter
+            if (selectedTypes.length > 0 && dest.place_type) {
+                const types = dest.place_type.split(',').map(t => t.trim());
+                
+                typeMatch = selectedTypes.some(selectedType => {
+                    // If the selected type is a group, check if any destination type belongs to that group
+                    if (typeGroupings[selectedType]) {
+                        return types.some(destType => 
+                            typeGroupings[selectedType].includes(destType)
+                        );
+                    } else {
+                        // If it's not a group, check direct match
+                        return types.includes(selectedType);
+                    }
+                });
+            }
+            
+            // Budget filter
+            let budgetMatch = selectedBudgetRanges.length === 0; // If no budget selected, pass budget filter
+            if (selectedBudgetRanges.length > 0) {
+                const entryFee = extractEntryFee(dest.entry_fee);
+                if (entryFee !== null) {
+                    budgetMatch = selectedBudgetRanges.some(range => {
+                        if (range.max === Infinity) {
+                            return entryFee >= range.min;
+                        } else {
+                            return entryFee >= range.min && entryFee <= range.max;
+                        }
+                    });
+                }
+            }
+            
+            return typeMatch && budgetMatch;
+        });
+    }
 
     displayDestinations(filtered, window.userLat, window.userLon);
     updateFilterCount(filtered.length, window.allDestinations.length);
@@ -137,11 +257,15 @@ function updateFilterCount(filtered, total) {
 function setupFilterListeners() {
     const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
     filterCheckboxes.forEach(cb => cb.addEventListener('change', filterDestinations));
+    
+    const budgetFilterCheckboxes = document.querySelectorAll('.budget-filter-checkbox');
+    budgetFilterCheckboxes.forEach(cb => cb.addEventListener('change', filterDestinations));
 
     const clearButton = document.getElementById('clear-filters');
     if(clearButton) {
         clearButton.addEventListener('click', () => {
             filterCheckboxes.forEach(cb => cb.checked = false);
+            budgetFilterCheckboxes.forEach(cb => cb.checked = false);
             displayDestinations(window.allDestinations, window.userLat, window.userLon);
         });
     }
@@ -197,6 +321,7 @@ async function loadDestinations() {
         window.allDestinations = destinations;
 
         createFilterOptions(destinations);
+        createBudgetFilterOptions(destinations);
 
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {

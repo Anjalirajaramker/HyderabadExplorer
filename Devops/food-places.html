@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Places - City Quest</title>
+    <link rel="stylesheet" href="food-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>🍽️  City Quest</h1>
+                <p>Discover the City of Pearls</p>
+            </div>
+            <nav class="main-nav">
+                <a href="home.html" class="nav-btn">Home</a>
+                <a href="index.html" class="nav-btn">Tourist Places</a>
+                <a href="food-places.html" class="nav-btn active">Food Places</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Banner -->
+        <section class="hero-banner">
+            <div class="hero-overlay"></div>
+            <div class="hero-text">
+                <h2>🍴 Explore Hyderabad's Best Food Places</h2>
+                <p>Discover the culinary delights of the City of Pearls</p>
+            </div>
+        </section>
+        <!-- Filter Section -->
+        <div id="filter-container">
+            <div class="filter-section">
+                <h3>Filter by Cuisine Type</h3>
+                <div id="cuisine-filter-options" class="filter-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h3>Filter by Budget Range</h3>
+                <div id="budget-filter-options" class="filter-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            
+            <div class="filter-controls">
+                <button id="clear-filters" class="btn-secondary">Clear All Filters</button>
+                <button id="show-nearby" class="btn-primary">📍 Show Nearby Places</button>
+            </div>
+            
+            <div class="filter-count">
+                <p id="results-count">Loading restaurants...</p>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="spinner" style="display: none;">
+            <div class="spinner-circle"></div>
+            <p>Finding food places...</p>
+        </div>
+
+        <!-- Food Places Container -->
+        <div id="food-places-container">
+            <!-- Dynamically populated -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hyderabad Food Guide. Taste the best of the city!</p>
+    </footer>
+
+    <script src="food-script.js"></script>
+</body>
+</html>

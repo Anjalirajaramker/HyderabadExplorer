@@ -2,31 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hyderabad Weekend Food Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Places - City Quest</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Hyderabad Weekend Food Guide</h1>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>🏛️ City Quest</h1>
+                <p>Discover the City of Pearls</p>
+            </div>
+            <nav class="main-nav">
+                <a href="home.html" class="nav-btn">Home</a>
+                <a href="index.html" class="nav-btn active">Tourist Places</a>
+                <a href="food-places.html" class="nav-btn">Food Places</a>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <div id="filter-container">
-            <h3>Filter by Type:</h3>
-            <div id="filter-options">
-                <!-- Filter options will be dynamically populated -->
+    <main class="main-content">
+        <!-- Hero Banner -->
+        <section class="hero-banner">
+            <div class="hero-overlay"></div>
+            <div class="hero-text">
+                <h2><span class="location-icon">📍</span> <span class="hero-title">Explore Hyderabad's Rich Heritage</span></h2>
+                <p>From ancient forts to modern attractions - discover it all!</p>
             </div>
-            <button id="clear-filters">Clear All Filters</button>
+        </section>
+
+        <!-- Filter Section -->
+        <div id="filter-container" class="filter-section">
+            <div class="filter-header">
+                <h3>🔍 Find Your Perfect Destination</h3>
+                <p>Filter by type, budget, or find places near you</p>
+            </div>
+            
+            <div class="filter-content">
+                <div class="filter-group">
+                    <label class="filter-label-header">Filter by Type:</label>
+                    <div id="filter-options" class="filter-grid">
+                        <!-- Filter options will be dynamically populated -->
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label-header">Filter by Budget:</label>
+                    <div id="budget-filter-options" class="filter-grid">
+                        <!-- Budget filter options will be dynamically populated -->
+                    </div>
+                </div>
+                
+                <div class="filter-controls">
+                    <button id="clear-filters" class="btn btn-secondary">Clear Filters</button>
+                    <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Finding nearby places...</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Loading spinner -->
-        <div id="loading-spinner" style="display:none; text-align:center; margin:20px;">
-            <p>⏳ Calculating distances, please wait...</p>
+        <!-- Results Section -->
+        <div class="results-section">
+            <div id="destinations-container" class="destinations-grid">
+                <!-- Destinations will be populated here -->
+            </div>
         </div>
-
-        <!-- Destinations will be displayed here -->
-        <div id="destinations-container"></div>
     </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 City Quest. Explore with passion! ❤️</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
