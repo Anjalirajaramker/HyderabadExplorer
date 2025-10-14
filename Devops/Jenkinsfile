@@ -1,21 +1,21 @@
 pipeline {
     agent any
     triggers {
-        githubPush()  // Trigger build when webhook sends push event
+        pollSCM('H/5 * * * *') // Poll every 5 minutes
     }
     stages {
         stage('Checkout SCM') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<your-username>/<your-repo>.git',
+                    url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git',
                     credentialsId: 'github-creds'
             }
         }
-        stage('Verify Frontend Files') {
+        stage('Verify  Files') {
             steps {
-                echo 'Listing project files...'
+                echo 'Listing  project files...'
                 sh 'ls -l'
-                echo '✅ Frontend code checkout successful!'
+                echo '✅  code checkout successful!'
             }
         }
     }
