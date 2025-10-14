@@ -1,14 +1,9 @@
 pipeline {
     agent any
-    triggers {
-        pollSCM('H/5 * * * *')
-    }
+    triggers { pollSCM('H/5 * * * *') }
     stages {
         stage('Checkout SCM') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git'
-            }
+            steps { git branch: 'main', url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git' }
         }
         stage('Verify Frontend Files') {
             steps {
@@ -26,17 +21,7 @@ pipeline {
                 if not exist C:\\JenkinsPreview\\HyderabadExplorer mkdir C:\\JenkinsPreview\\HyderabadExplorer
                 xcopy /E /Y Devops\\* C:\\JenkinsPreview\\HyderabadExplorer\\
                 '''
-                echo '✅ Files copied! Ready to serve.'
-            }
-        }
-        stage('Serve Frontend Locally') {
-            steps {
-                echo 'Starting local server on port 8080...'
-                bat '''
-                cd C:\\JenkinsPreview\\HyderabadExplorer
-                npx http-server -p 3000
-                '''
-                echo '✅ Frontend is now served at http://localhost:8080'
+                echo '✅ Files copied! Ready to preview at C:\\JenkinsPreview\\HyderabadExplorer'
             }
         }
     }
