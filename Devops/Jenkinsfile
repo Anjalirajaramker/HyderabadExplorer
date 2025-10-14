@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    triggers {
+        githubPush()  // Trigger build when webhook sends push event
+    }
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/<your-username>/<your-repo>.git',
+                    credentialsId: 'github-creds'
+            }
+        }
+        stage('Verify Frontend Files') {
+            steps {
+                echo 'Listing project files...'
+                sh 'ls -l'
+                echo '✅ Frontend code checkout successful!'
+            }
+        }
+    }
+}
