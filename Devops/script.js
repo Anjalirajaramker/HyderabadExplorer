@@ -175,6 +175,35 @@ function extractEntryFee(entryFeeString) {
     return match ? parseInt(match[1]) : null;
 }
 
+// Create distance filter options
+function createDistanceFilterOptions() {
+    const distanceRanges = [
+        { label: 'Within 5 km', min: 0, max: 5 },
+        { label: '5 - 10 km', min: 5, max: 10 },
+        { label: '10 - 20 km', min: 10, max: 20 },
+        { label: '20 - 50 km', min: 20, max: 50 },
+        { label: 'Above 50 km', min: 50, max: Infinity }
+    ];
+
+    const filterContainer = document.getElementById('distance-filter-options');
+    filterContainer.innerHTML = '';
+
+    distanceRanges.forEach(range => {
+        const label = document.createElement('label');
+        label.className = 'filter-label';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'distance-filter-checkbox';
+        checkbox.dataset.min = range.min;
+        checkbox.dataset.max = range.max;
+        const span = document.createElement('span');
+        span.textContent = range.label;
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        filterContainer.appendChild(label);
+    });
+}
+
 // Filter destinations
 function filterDestinations() {
     const selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(cb => cb.dataset.type);
@@ -182,9 +211,13 @@ function filterDestinations() {
         min: parseInt(cb.dataset.min),
         max: parseInt(cb.dataset.max)
     }));
+    const selectedDistanceRanges = Array.from(document.querySelectorAll('.distance-filter-checkbox:checked')).map(cb => ({
+        min: parseInt(cb.dataset.min),
+        max: parseInt(cb.dataset.max)
+    }));
 
     let filtered;
-    if(selectedTypes.length === 0 && selectedBudgetRanges.length === 0) {
+    if(selectedTypes.length === 0 && selectedBudgetRanges.length === 0 && selectedDistanceRanges.length === 0) {
         filtered = window.allDestinations;
     } else {
         // Define type groupings (same as in createFilterOptions)
@@ -233,7 +266,22 @@ function filterDestinations() {
                 }
             }
             
-            return typeMatch && budgetMatch;
+            // Distance filter
+            let distanceMatch = selectedDistanceRanges.length === 0; // If no distance selected, pass distance filter
+            if (selectedDistanceRanges.length > 0 && dest.user_distance && dest.user_distance !== "N/A") {
+                const distance = parseFloat(dest.user_distance);
+                if (!isNaN(distance)) {
+                    distanceMatch = selectedDistanceRanges.some(range => {
+                        if (range.max === Infinity) {
+                            return distance >= range.min;
+                        } else {
+                            return distance >= range.min && distance <= range.max;
+                        }
+                    });
+                }
+            }
+            
+            return typeMatch && budgetMatch && distanceMatch;
         });
     }
 
@@ -260,12 +308,16 @@ function setupFilterListeners() {
     
     const budgetFilterCheckboxes = document.querySelectorAll('.budget-filter-checkbox');
     budgetFilterCheckboxes.forEach(cb => cb.addEventListener('change', filterDestinations));
+    
+    const distanceFilterCheckboxes = document.querySelectorAll('.distance-filter-checkbox');
+    distanceFilterCheckboxes.forEach(cb => cb.addEventListener('change', filterDestinations));
 
     const clearButton = document.getElementById('clear-filters');
     if(clearButton) {
         clearButton.addEventListener('click', () => {
             filterCheckboxes.forEach(cb => cb.checked = false);
             budgetFilterCheckboxes.forEach(cb => cb.checked = false);
+            distanceFilterCheckboxes.forEach(cb => cb.checked = false);
             displayDestinations(window.allDestinations, window.userLat, window.userLon);
         });
     }
@@ -322,6 +374,7 @@ async function loadDestinations() {
 
         createFilterOptions(destinations);
         createBudgetFilterOptions(destinations);
+        createDistanceFilterOptions();
 
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
