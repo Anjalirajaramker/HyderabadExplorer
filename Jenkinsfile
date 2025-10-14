@@ -26,15 +26,19 @@ pipeline {
                 if not exist C:\\JenkinsPreview\\HyderabadExplorer mkdir C:\\JenkinsPreview\\HyderabadExplorer
                 xcopy /E /Y Devops\\* C:\\JenkinsPreview\\HyderabadExplorer\\
                 '''
-                echo '✅ Files copied! You can now open C:\\JenkinsPreview\\HyderabadExplorer in your browser.'
+                echo '✅ Files copied! Ready to serve.'
             }
         }
-        stage('Open Frontend in Browser') {
+        stage('Serve Frontend Locally') {
             steps {
-                echo 'Launching frontend in default browser...'
-                bat 'start C:\\JenkinsPreview\\HyderabadExplorer\\index.html'
-                echo '✅ Browser should now open automatically!'
+                echo 'Starting local server on port 8080...'
+                bat '''
+                cd C:\\JenkinsPreview\\HyderabadExplorer
+                npx http-server -p 8080
+                '''
+                echo '✅ Frontend is now served at http://localhost:8080'
             }
         }
     }
 }
+
