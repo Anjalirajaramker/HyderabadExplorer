@@ -34,7 +34,7 @@ pipeline {
                 echo 'Starting local server on port 8080...'
                 bat '''
                 cd C:\\JenkinsPreview\\HyderabadExplorer
-                npx http-server -p 8080
+                npx http-server -p 3000
                 '''
                 echo '✅ Frontend is now served at http://localhost:8080'
             }
