@@ -7,15 +7,16 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git',
-                    credentialsId: 'github-creds'
+                    url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git'
             }
         }
-        stage('Verify  Files') {
+        stage('Verify Frontend Files') {
             steps {
-                echo 'Listing  project files...'
-                bat 'dir'  // ✅ Windows command
-                echo '✅ Frontend code checkout successful!'
+                dir('Devops') { // navigate to the folder containing HTML/CSS/JS
+                    echo 'Listing frontend project files...'
+                    bat 'dir' // Windows command
+                    echo '✅ Frontend code checkout successful!'
+                }
             }
         }
     }
