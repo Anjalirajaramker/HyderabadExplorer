@@ -8,7 +8,7 @@ import time
 import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
-from helpers import wait_for_cards_to_load, get_visible_cards
+from selenium_tests.helpers import wait_for_cards_to_load, get_visible_cards
 
 
 def test_filter_by_type_heritage(browser):

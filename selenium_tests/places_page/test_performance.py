@@ -8,7 +8,7 @@ import time
 import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
-from helpers import wait_for_cards_to_load
+from selenium_tests.helpers import wait_for_cards_to_load
 
 
 def test_page_loads_within_timeout(browser):

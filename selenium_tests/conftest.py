@@ -22,7 +22,7 @@ def start_server():
     global server, server_thread
     
     # Get project directory
-    project_path = os.path.join(os.path.dirname(__file__), "..", "..", "Devops")
+    project_path = os.path.join(os.path.dirname(__file__), "..", "Devops")
     
     # Change to project directory
     os.chdir(project_path)
