@@ -10,7 +10,7 @@ import time
 # Global server instance
 server = None
 server_thread = None
-PORT = 8888
+PORT = 9999
 
 @pytest.fixture(scope="session", autouse=True)
 def start_server():
