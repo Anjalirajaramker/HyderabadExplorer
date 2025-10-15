@@ -1,0 +1,11 @@
+# Stage 1: Use an official NGINX image as the base
+# NGINX is a very popular, high-performance web server.
+FROM nginx:alpine
+
+# Stage 2: Copy your website's files into the web server's main directory
+# The '.' means copy everything from the current folder (your project folder).
+# The '/usr/share/nginx/html' is the default folder where NGINX serves files from.
+COPY . /usr/share/nginx/html
+
+# Stage 3: Tell Docker that the container will listen on port 80
+EXPOSE 8888

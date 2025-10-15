@@ -103,6 +103,7 @@ def home_browser():
     Setup for testing the home page.
     """
     chrome_options = Options()
+
     chrome_options.add_argument("--headless")
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_argument('--disable-web-security')

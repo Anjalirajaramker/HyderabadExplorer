@@ -7,23 +7,18 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Anjalirajaramker/HyderabadExplorer.git' 
             }
         }
-        stage('Verify Frontend Files') { 
+        stage('Build Frontend Docker') {
             steps {
-                dir('Devops') {
-                    echo 'Listing frontend project files...'
-                    bat 'dir'
-                    echo '✅ Frontend code checkout successful!'
-                }
+                echo 'Building frontend Docker container...'
+                bat 'docker build -f Dockerfile.frontend -t hyderabad-frontend .'
+                echo '✅ Frontend Docker image built successfully!'
             }
         }
-        stage('Copy Frontend Files for Preview') {
+        stage('Run Frontend Container') {
             steps {
-                echo 'Copying frontend files to local preview folder...'
-                bat '''
-                if not exist C:\\JenkinsPreview\\HyderabadExplorer mkdir C:\\JenkinsPreview\\HyderabadExplorer
-                xcopy /E /Y Devops\\* C:\\JenkinsPreview\\HyderabadExplorer\\
-                '''
-                echo '✅ Files copied! Ready to preview at C:\\JenkinsPreview\\HyderabadExplorer'
+                echo 'Starting frontend container...'
+                bat 'docker run -d --name hyderabad-frontend-jenkins -p 8888:80 hyderabad-frontend'
+                echo '✅ Frontend container running at http://localhost:8888'
             }
         }
         stage('Install Python Dependencies') {
@@ -49,6 +44,13 @@ pipeline {
                 echo 'Archiving test results for both modules...'
                 junit 'selenium_tests/places_page/report.xml'
                 junit 'selenium_tests/food_page/report.xml'
+            }
+        }
+        stage('Stop Frontend Container') {
+            steps {
+                echo 'Stopping and removing frontend container...'
+                bat 'docker stop hyderabad-frontend-jenkins && docker rm hyderabad-frontend-jenkins'
+                echo '✅ Frontend container stopped and removed'
             }
         }
     }
