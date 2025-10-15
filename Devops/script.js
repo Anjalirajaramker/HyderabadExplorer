@@ -395,7 +395,9 @@ async function loadDestinations() {
 
         // Optional: Add nearest filter button dynamically
         const filterContainer = document.getElementById('filter-container');
+
         const nearestBtn = document.createElement('button');
+        nearestBtn.id='find-nearby-btn'
         nearestBtn.textContent = 'Show Nearest 5 Places';
         nearestBtn.style.background = '#007bff';
         nearestBtn.style.color = 'white';
