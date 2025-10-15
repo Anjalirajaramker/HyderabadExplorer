@@ -23,7 +23,7 @@ pipeline {
                 bat 'docker rm -f hyderabad-frontend-jenkins || echo Skipping'
                 echo 'Starting frontend container (demo only)...'
                 bat 'docker run -d --name hyderabad-frontend-jenkins -p 8888:80 hyderabad-frontend'
-                bat 'timeout /t 5' // small wait to ensure container is ready
+                bat 'timeout /t 5 /nobreak' // small wait to ensure container is ready
                 echo '✅ Docker frontend container is running (demo). Selenium will use local HTTP server instead.'
             }
         }
