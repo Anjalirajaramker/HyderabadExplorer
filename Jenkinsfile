@@ -29,13 +29,14 @@ pipeline {
         stage('Install Python Dependencies') {
             steps {
                 echo 'Installing Python packages...'
-                bat 'pip install selenium pytest'
+                bat '"C:\\Users\\27ran\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" -m pip install --upgrade pip && "C:\\Users\\27ran\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" -m pip install selenium pytest'
+
             }
         }
         stage('Run Selenium Tests') {
             steps {
                 echo 'Running Selenium tests...'
-                bat 'pytest selenium_tests/places_page --junitxml=selenium_tests/places_page/report.xml'
+                bat '"C:\\Users\\27ran\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" -m pytest selenium_tests/places_page --junitxml=selenium_tests/places_page/report.xml'
             }
         }
         stage('Archive Test Reports') {
